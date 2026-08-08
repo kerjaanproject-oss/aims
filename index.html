@@ -7933,10 +7933,10 @@
         document.getElementById('fullPageLoader').style.display = 'flex';
         document.getElementById('loaderText').textContent = 'Memverifikasi kredensial...';
 
-        google.script.run
-          .withSuccessHandler(function (res) {
+        gasRun('loginUser', uInput, pInput)
+          .then(function (res) {
             document.getElementById('fullPageLoader').style.display = 'none';
-            if (res.success) {
+            if (res && res.success) {
               Auth.login(res.token, res.user);
               Swal.fire({
                 title: 'Berhasil Masuk!',
@@ -7948,14 +7948,13 @@
                 checkLoginState();
               });
             } else {
-              Swal.fire('Gagal Masuk', res.message, 'error');
+              Swal.fire('Gagal Masuk', (res && res.message) ? res.message : 'Username atau password salah.', 'error');
             }
           })
-          .withFailureHandler(function (err) {
+          .catch(function (err) {
             document.getElementById('fullPageLoader').style.display = 'none';
-            Swal.fire('Error Sistem', err.message || 'Gagal menghubungi server.', 'error');
-          })
-          .loginUser(uInput, pInput);
+            Swal.fire('Error Sistem', (err && err.message) ? err.message : String(err) || 'Gagal menghubungi server.', 'error');
+          });
       }
 
       window.togglePasswordVisibility = function () {
