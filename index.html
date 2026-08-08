@@ -7460,7 +7460,7 @@
       };
 
       // Hybrid Server Run helper (Supports both Google Apps Script environment & GitHub Pages hosting)
-      window.GAS_WEB_APP_URL = window.GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbx2MfeJnqGE744F5vOtfBfsQT8J4_r5nJjDjJ4lmHVO-3SnZWtsln0hF6nXZ-WLuPHv/exec"; // Paste your GAS Web App URL here if hosting on GitHub Pages
+      window.GAS_WEB_APP_URL = window.GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbzzmiVwnnQSp7KNBffcVL05L9e_4CxMpA9IXOA0AfrF7dsmZQxTEUMgnGgDakikWtI/exec"; // Paste your GAS Web App URL here if hosting on GitHub Pages
 
       function gasRun(funcName) {
         var args = Array.prototype.slice.call(arguments, 1);
@@ -7724,10 +7724,10 @@
         document.getElementById('fullPageLoader').style.display = 'flex';
         document.getElementById('loaderText').textContent = 'Memverifikasi kredensial...';
 
-        google.script.run
-          .withSuccessHandler(function (res) {
+        gasRun('loginUser', uInput, pInput)
+          .then(function (res) {
             document.getElementById('fullPageLoader').style.display = 'none';
-            if (res.success) {
+            if (res && res.success) {
               Auth.login(res.token, res.user);
               Swal.fire({
                 title: 'Berhasil Masuk!',
@@ -7739,14 +7739,14 @@
                 checkLoginState();
               });
             } else {
-              Swal.fire('Gagal Masuk', res.message, 'error');
+              Swal.fire('Gagal Masuk', (res && res.message) || 'Username atau password salah.', 'error');
             }
           })
-          .withFailureHandler(function (err) {
+          .catch(function (err) {
             document.getElementById('fullPageLoader').style.display = 'none';
+            console.error('Login error:', err);
             Swal.fire('Error Sistem', err.message || 'Gagal menghubungi server.', 'error');
-          })
-          .loginUser(uInput, pInput);
+          });
       }
 
       window.togglePasswordVisibility = function () {
