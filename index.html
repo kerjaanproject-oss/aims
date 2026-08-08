@@ -7622,7 +7622,7 @@
       // PASTE / MASUKKAN URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI BAWAH INI
       // Contoh: 'https://script.google.com/macros/s/AKfycb.../exec'
       // =========================================================================
-      var DEFAULT_GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxg2aHXbIG4Hi3aNkiGG75-V3danq8kJZSHVtw43bTsa87TNLNMxD2JZ9qbVpEnJ9ov/exec';
+      var DEFAULT_GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwzURmqLUyaoK_NRJHz1MgLpS5cWkOUaPRCDzTra3Hwkv1_-tIHPChd2PLvxRQctT5q/exec';
 
       var GAS_WEB_APP_URL = DEFAULT_GAS_WEB_APP_URL || localStorage.getItem('aims_gas_url') || '';
 
@@ -7668,10 +7668,13 @@
             return reject(new Error('GAS_WEB_APP_URL belum diatur.'));
           }
 
-          fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: funcName, args: args })
+          // Mode 2: Running standalone on GitHub Pages (via fetch API to GAS Web App)
+          var queryString = '?action=' + encodeURIComponent(funcName) + '&args=' + encodeURIComponent(JSON.stringify(args));
+
+          fetch(GAS_WEB_APP_URL + queryString, {
+            method: 'GET',
+            mode: 'cors',
+            redirect: 'follow'
           })
             .then(function (resp) { return resp.json(); })
             .then(function (data) {
@@ -7683,6 +7686,7 @@
               }
             })
             .catch(function (err) {
+              console.error('GAS API Fetch Error:', err);
               reject(err);
             });
         });
