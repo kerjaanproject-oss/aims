@@ -13,6 +13,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AIMS HRIS">
 
+  <!-- PWA Physical Manifest & Apple Touch Icon -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
   <!-- Plus Jakarta Sans Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7238,79 +7242,18 @@
 
   <!-- Application Logic -->
   <script>
-    // ================= PWA STANDALONE SINGLE-FILE SYSTEM =================
+    // ================= PWA WEBAPK NATIVE SYSTEM =================
     var deferredPwaPrompt = null;
 
-    (function initSingleFilePWA() {
-      try {
-        // 1. High Resolution SVG Icon Data URI
-        var svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#312e81"/></linearGradient><linearGradient id="ic" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#e0e7ff"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="url(#bg)"/><circle cx="256" cy="220" r="140" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12"/><path d="M256 120 L330 155 V235 C330 290 292 335 256 355 C220 335 182 290 182 235 V155 Z" fill="url(#ic)" opacity="0.95"/><path d="M256 145 L310 172 V230 C310 273 282 310 256 327 C230 310 202 273 202 230 V172 Z" fill="#4f46e5"/><text x="256" y="255" font-family="sans-serif" font-weight="900" font-size="52" fill="#ffffff" text-anchor="middle">AIMS</text><text x="256" y="430" font-family="sans-serif" font-weight="800" font-size="42" fill="#ffffff" text-anchor="middle" letter-spacing="6">HRIS APP</text></svg>`;
-        var iconDataUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgIcon);
-
-        // 2. Generate PWA Web App Manifest Blob
-        var manifestObj = {
-          name: "AIMS HRIS - Management Karyawan",
-          short_name: "AIMS HRIS",
-          description: "Access Information Monitoring System",
-          start_url: "./",
-          scope: "./",
-          display: "standalone",
-          orientation: "any",
-          background_color: "#f8fafc",
-          theme_color: "#4f46e5",
-          icons: [
-            {
-              src: iconDataUrl,
-              sizes: "192x192 512x512",
-              type: "image/svg+xml",
-              purpose: "any maskable"
-            }
-          ]
-        };
-
-        var manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
-        var manifestUrl = URL.createObjectURL(manifestBlob);
-
-        var manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        manifestLink.href = manifestUrl;
-        document.head.appendChild(manifestLink);
-
-        // Apple Touch Icon
-        var appleIcon = document.createElement('link');
-        appleIcon.rel = 'apple-touch-icon';
-        appleIcon.href = iconDataUrl;
-        document.head.appendChild(appleIcon);
-      } catch (err) {
-        console.warn('PWA Manifest setup warning:', err);
-      }
-
-      // 3. Register Blob Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          try {
-            var swContent = `
-              const CACHE_NAME = 'aims-pwa-cache-v1';
-              self.addEventListener('install', (e) => { self.skipWaiting(); });
-              self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-              self.addEventListener('fetch', (e) => {
-                if (e.request.method !== 'GET') return;
-                e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-              });
-            `;
-            var swBlob = new Blob([swContent], { type: 'application/javascript' });
-            var swUrl = URL.createObjectURL(swBlob);
-            navigator.serviceWorker.register(swUrl).then(function (reg) {
-              console.log('PWA Service Worker registered:', reg);
-            }).catch(function (err) {
-              console.warn('PWA Service Worker error:', err);
-            });
-          } catch (e) {
-            console.warn('PWA Service Worker registration skipped:', e);
-          }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js').then(function (reg) {
+          console.log('PWA Service Worker registered successfully:', reg);
+        }).catch(function (err) {
+          console.warn('PWA Service Worker error:', err);
         });
-      }
-    })();
+      });
+    }
 
     // 4. Capture Install Prompt Event (Android/Chrome/Edge)
     window.addEventListener('beforeinstallprompt', function (e) {
