@@ -1805,7 +1805,7 @@
 
       <div class="sidebar-footer">
         <button id="pwaInstallBtnSidebar"
-          class="btn btn-primary btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2 mb-2 shadow-sm d-none"
+          class="btn btn-primary btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2 mb-2 shadow-sm"
           style="background: linear-gradient(135deg, #4f46e5, #3730a3); border: none; color: #ffffff; font-weight: 700;"
           onclick="triggerPWAInstall()">
           <i class="bi bi-download fs-6"></i>
@@ -1834,7 +1834,7 @@
         </div>
         <div class="d-flex align-items-center gap-3">
           <button id="pwaInstallBtnTopbar"
-            class="btn btn-sm text-white d-none align-items-center gap-1 shadow-sm px-3 py-2 rounded-3"
+            class="btn btn-sm text-white d-flex align-items-center gap-1 shadow-sm px-3 py-2 rounded-3"
             style="background: linear-gradient(135deg, #4f46e5, #3730a3); border: none; font-weight: 700;"
             onclick="triggerPWAInstall()">
             <i class="bi bi-phone-vibrate me-1"></i>
@@ -1850,6 +1850,11 @@
               <span id="topbarUsername">Admin</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3">
+              <li>
+                <a class="dropdown-item py-2 text-primary fw-bold d-flex align-items-center gap-2" href="#" onclick="triggerPWAInstall()">
+                  <i class="bi bi-download"></i> Install App AIMS
+                </a>
+              </li>
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -7311,13 +7316,28 @@
     window.addEventListener('beforeinstallprompt', function (e) {
       e.preventDefault();
       deferredPwaPrompt = e;
+      checkPwaInstallButtonVisibility();
+    });
+
+    window.checkPwaInstallButtonVisibility = function () {
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       var btnSidebar = document.getElementById('pwaInstallBtnSidebar');
       var btnTopbar = document.getElementById('pwaInstallBtnTopbar');
-      if (btnSidebar) btnSidebar.classList.remove('d-none');
-      if (btnTopbar) {
-        btnTopbar.classList.remove('d-none');
-        btnTopbar.classList.add('d-flex');
+
+      if (isStandalone) {
+        if (btnSidebar) btnSidebar.classList.add('d-none');
+        if (btnTopbar) btnTopbar.classList.add('d-none');
+      } else {
+        if (btnSidebar) btnSidebar.classList.remove('d-none');
+        if (btnTopbar) {
+          btnTopbar.classList.remove('d-none');
+          btnTopbar.classList.add('d-flex');
+        }
       }
+    };
+
+    window.addEventListener('load', function () {
+      checkPwaInstallButtonVisibility();
     });
 
     // Global Function to Trigger Installation Prompt
