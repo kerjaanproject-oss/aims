@@ -10,11 +10,69 @@
   <meta name="apple-mobile-web-app-title" content="AIMS">
   <meta name="theme-color" content="#4f46e5">
   <script>
-    window.deferredPwaPrompt = null;
-    window.addEventListener('beforeinstallprompt', function (e) {
-      e.preventDefault();
-      window.deferredPwaPrompt = e;
-    });
+    (function () {
+      window.deferredPwaPrompt = null;
+      window.userRequestedInstall = false;
+
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        window.deferredPwaPrompt = e;
+        if (window.userRequestedInstall) {
+          window.userRequestedInstall = false;
+          e.prompt();
+        }
+      });
+
+      try {
+        var manifestObj = {
+          name: "AIMS - Access Information Monitoring System",
+          short_name: "AIMS",
+          description: "AIMS - Management System",
+          start_url: window.location.href,
+          display: "standalone",
+          orientation: "portrait",
+          background_color: "#0f172a",
+          theme_color: "#4f46e5",
+          icons: [
+            {
+              src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAKoElEQVR4nO3dV3cUNxQHcL7BPu4Z3t0o/5z+uHcDXKPyD0imwcGNw4M3ityH/pvpJERASwZuWTpwy9Jlt4rcJtK1niTLBu+PM/SAyKZlQ5vQRwecIAAtGbhJ5GYRi3qWDz0o8lCc3MPLcw+jj912fAa0eODGJXHQ9AzmHhF5dDD3KHo1LMU3QIv7r1/cf0McSnoGc48N5h4bGn5c5An0KhmMJ4AW918n6DigR+TJoeEnc8NPoddNP84DWhTTcVPnPzmXH4zeg0DBbSo/1oP9OTyW3L5LcP5rej1DAXQor5rBB2v9IhsE9mOXmFvAcV0fNczHG3PRzvy0Q70ansFaJZOMHpEduajneiV9wFQsHry0a4o2oVef4cBLezbELieqPC0yG70uXAM0MK+DaynrUdkT6GwB31e3ADEeubVUyjsLRT2os8OaUAL+65mPQo9hRXPiDyLPlMUAbGelHpWxHkOfb5oAWI9XekReR591kgAEnRYT9d64hT3FYv7ggbEejT1FIv7i8X9gQJiPUb0FIsHisUDwQFiPQb1FIsHVxYPhgJoYd9VrMe4npUrXxB50XNArMeqHpGXvAXEegD0jMR52UNArAdMT5yRV7wCxHqA9STxBBDrQdFTGjlUGjnkPCDWg6inNHK4NHLYdUCsB1NPaeSIw4BYD7qe0siRculVJwGxHiJ6RF5zDBDrIaVH5HVnALEegnrKpdcrpTccAsR6yOlxA5CLemamp3qLW3oq5Tcr5TdJA3JIT89oZHFCT6X8VqX8FlFATugx7ubKENdTLU9Xy9M0AdHVA+BmPklE9VTLR8kBIqsHhc6lIagnTuUYIUA09aDT+R8jYneqqlWO1ynFCgEjpQeciCyk9VACR0mNqpufd7zHGiIaeWuVErXICH5DrejR3C3v7o0T01ConkQER0dOTG8N7zT0xQtZTq5ysV99GA+SiHoA3FV39HnQ9IqdQATmiB/g9VxeGsPXgAELX0xUdrLek3TBC01Ovnq5XT2MAIq+HyDv2lL8WUU8DGBB9PQRPaKQyhKSnUX2nUXsHEBDr6ek9V0pDKHoatXeBAbGeXt6SphkCih44QGT1OHS2MIUhaD2N2nujtfdgAFFcsTukJ1mxdwKEoGe09r51QKzH4Pke9aDg9Yh8YBcQ6zF7vqeTIWg9dgGxHhunwzoZAtUzWj/TrJ+xB4jWO3YP9CQrdjUgYD3N+odWAbEeK2cLFSMF1mMLECk99Pd7un3Hrh4spJ5m/WyzftYGIEInUz3Tk6zYlYBA9TTr5+wAYj2WT8UrRg2pp2UFEI1vKjzWk6zYlYCA9LQa5w0DIqKHzgkNe6filQ8hID0iF0wCIvI1oPd6khW7FBCgHuOA8PXgni2E/J5LUQEwPa3GRWOAiHzHHoieZMWuBAShZyzORwYB4XdBCEePApAwBKTHICC4Diysp73fIwcEpGds9GODgJD794Smp1o+qgAEo8cgINaD8yWyrCAwesZGPzEACLLznBJQcHqUgCD0jMf5VBcQhb6FYeqpVY4rAUHoMQGI9aD20JAbgtAzPvqZEUAQHXeVgALVowAEo8cIIKB+zXJA4eqpVU7KAUHoGW9+bgQQWrfvwPUkK/b5AYHomTABCLNXPOuRARKGrOuZaH6hBQjsngpZjVhPvXpKDsi6niS9AwK75UQFKGw9CkAweiaaX+oAArorRwooeD316om5IAg9+oAgblhSAgpaTydA1vVMNr/SAQR0P5ccUOh6GipAEHomWzqAoG53Yz3qd+xSQPb1TLa+1gEEdDegDBDrSfZ75gcEokcLENjNkvMWiPW0dwvnrQ+MnsnWNzqAgO4llQNiPfFuoQQQhB59QBC32koAsZ7ZvWY5IOt6VrW+1QEEdCeyHBDriXcLJYAg9OgDgrhRWwKI9czuNcsBWdezqvWdDiCg+9hlWx2sR6ZHAILQs2pMAxCMnlx+SydA4eoZrX0gKw6MnlVj3+sAgtDTCVDQelSAQPToA7KuZzi/VQ4odD2j9TNKQNb1rB77QQcQhJ5OgILW01QBgtCjBSgxZFvPcH6bHFDoepr1D5WAMPWkAgSgR3EnMuuRAYLRs3rsRxOA7OsZjqSXarMeCSAIPSYAgejJRzvkgMLV06yflZUFRs/qsZ+MALKupxOgQPUoAUHoMQIIQk+y3yMrFuvB0rNmfMYAIBg9SkAh6mnWz6kAgegpACiTjWD05KNdKkDh6WkpANHQkx4QhJ5kxS41xHrA9awZ/9kcIBA9SkBh6Wk1zisBQegxBwhKT1TYLavazPQU65kDBKRnzfgvxgDB6ElW7EpAQehRPn7g9BgDlMlGkLe7KR9CQeuZmZ4ipacrQKB35EgBBaCn1bhAQc/a8V+NA4K7aUDxLxisHgEITo9hQMIQaK94JSBv9SgfP+T0dAcIuNu38iEUnJ45QEB61k78ZgkQaMddRTVZj1U9lgBB92tWFDQ2FIweAQhUz9qJ380DEoage6YqAfmjp9W46KKeXgDBd71UGmI95vVYBITSM1X9bPdbzywgWD3rJv6wBSg2hNH1soMh1oOkp2dACJ3nOhpiPUb0WAckDOF0nlOXm/XA6+kREFbnOXXFhSFP9MSAMPSsm/gTApAwhNM7rGPdZ6aniOtJMwRX9GgCwun+lM4Q6+laDzAgzN5h6Qyxnu70rJv8Cw5QJhvh9g5LMxkz01NE9KT8tc7pMQIIrX9PylmJGZE8W0hKDwIgYQi/+1P6GaJzKv5yOkgrdn09RgDh9+9JP1UxI7zvucjqWY8FKJON0PUkK/au5iwJ2HfsHusxACg2hK2nvWLvYQrFBexW+vd0puO+HlOASOhJVuy9TeeV6apfs7t61k/+jQ9IGCKhp71iNzXTxgN/MtWqHmOASOlpr9jRuVxBh5YeQoCEIVp62it2AnRAvwaE1GMSUGyInp72ih2FDvB37PB6jAMiqufSFTuIG7j+Pb3pWT/5D0VAmWxEXM+lK3bzbgD7FhLRYx6QMOSAnjR3IqcJWLdvmnqsAIoNOaVH82xhyHpsAWI9NPU4A0gYYj3+67EISBhiPZ7rsQsok41Yj996rAOKDbEef/XAAGI9mHrWT/7rNiBhiPX4qQcIUCYbsR4v9cABig2xHu/0gAJKDLEen/RAA8pkI9bJkI9bjkx4EQMIQ6/FEDw6gJKzHrf0ecoCEIdbjth5kQMIQ63FYDz6gTDZiPe7qIQFolhHrIXA6zGFAwhDrcUwPLUCZbMR63NJDDtAsI9Zj/3sunwFlshHrcUIPXUBzjFiPsS4IIQJKErge9Po7D0gYYj1E4wagOUYB6UGvtoeAknivB73CngNqxzM96PUMDtAcI+f1oNcwaEBJHNWDXjf9eAKoHSf0oFfJYHwDdGlI6UGvhqX4DKgdRD3oY7edIABdFqt60EcHnBABzZse9KD/ZgphQBytMCCOVhgQRysMiKMVBsTRCgPiaIUBcbTCgDhaYUAcrfwHrV6O",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any maskable"
+            },
+            {
+              src: "data:image/png;base64,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",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any maskable"
+            }
+          ]
+        };
+
+        var manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+        var manifestUrl = URL.createObjectURL(manifestBlob);
+        var link = document.querySelector('link[rel="manifest"]');
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = 'manifest';
+          document.head.appendChild(link);
+        }
+        link.href = manifestUrl;
+
+        if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+          var swCode = `
+            self.addEventListener('install', (e) => { self.skipWaiting(); });
+            self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
+            self.addEventListener('fetch', (e) => {
+              e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+            });
+          `;
+          var swBlob = new Blob([swCode], { type: 'text/javascript' });
+          var swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).catch(function () {});
+        }
+      } catch (err) {}
+    })();
   </script>
 
   <!-- Plus Jakarta Sans Font -->
@@ -17195,18 +17253,30 @@
             window.deferredPwaPrompt = null;
           });
         } else {
-          if (typeof Swal !== 'undefined') {
-            Swal.fire({
-              title: '📱 Cara Install Aplikasi di HP',
-              html: '<div class="text-start small p-2">' +
-                '<p class="mb-2"><b>Di HP Android (Chrome/Edge):</b><br>1. Tekan tombol menu titik tiga (⋮) di pojok kanan atas browser.<br>2. Pilih <b>"Tambahkan ke Layar Utama"</b> atau <b>"Install Aplikasi"</b>.</p>' +
-                '<hr class="my-2">' +
-                '<p class="mb-0"><b>Di iPhone / iPad (Safari):</b><br>1. Tekan tombol <b>Share</b> (kotak dengan panah ke atas di bagian bawah Safari).<br>2. Geser ke bawah dan pilih <b>"Add to Home Screen"</b> (*Tambahkan ke Layar Utama*).</p>' +
-                '</div>',
-              icon: 'info',
-              confirmButtonText: 'Saya Mengerti',
-              confirmButtonColor: '#4f46e5'
-            });
+          window.userRequestedInstall = true;
+          if (location.protocol === 'file:') {
+            if (typeof Swal !== 'undefined') {
+              Swal.fire({
+                title: '📱 Cara Install Aplikasi di HP',
+                html: '<div class="text-start small p-2">' +
+                  '<p class="mb-2"><b>Di HP Android (Chrome/Edge):</b><br>1. Tekan tombol menu titik tiga (⋮) di pojok kanan atas browser.<br>2. Pilih <b>"Tambahkan ke Layar Utama"</b> atau <b>"Install Aplikasi"</b>.</p>' +
+                  '<hr class="my-2">' +
+                  '<p class="mb-0"><b>Info:</b> Untuk pop-up instalasi WebAPK otomatis Chrome, pastikan file dibuka melalui Web Server / HTTPS (seperti GitHub Pages).</p>' +
+                  '</div>',
+                icon: 'info',
+                confirmButtonText: 'Saya Mengerti',
+                confirmButtonColor: '#4f46e5'
+              });
+            }
+          } else {
+            if (typeof Swal !== 'undefined') {
+              Swal.fire({
+                title: '📱 Menyiapkan Instalasi...',
+                text: 'Menghubungkan ke layanan instalasi Chrome WebAPK. Mohon tunggu sejenak...',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
           }
         }
       };
