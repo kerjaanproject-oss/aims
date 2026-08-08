@@ -17107,18 +17107,61 @@
     var deferredPwaPrompt = null;
 
     /**
-     * Ultra-lightweight inline SVG data URL for PWA manifest icon
-     * Avoids heavy canvas rendering loops that cause phone freezing
+     * Generate PNG Base64 Icon required by Chrome WebAPK Minting Service
+     * Android Chrome REJECTS SVG icons and falls back to Chrome-badged shortcut if type is not image/png
      */
-    function getPwaIconDataUrl() {
-      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">' +
-        '<rect width="512" height="512" rx="96" fill="#0f172a"/>' +
-        '<circle cx="256" cy="210" r="115" fill="none" stroke="#b8924b" stroke-width="14"/>' +
-        '<text x="256" y="225" font-family="sans-serif" font-weight="900" font-size="100" fill="#ffffff" text-anchor="middle">AIMS</text>' +
-        '<text x="256" y="365" font-family="sans-serif" font-weight="700" font-size="30" fill="#f8fafc" text-anchor="middle">MANAGEMENT</text>' +
-        '<text x="256" y="405" font-family="sans-serif" font-weight="600" font-size="22" fill="#b8924b" text-anchor="middle">SYSTEM</text>' +
-        '</svg>';
-      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    function getPwaPngIconDataUrl(size) {
+      try {
+        var canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return '';
+
+        // 1. Latar Belakang Navy
+        var grad = ctx.createLinearGradient(0, 0, size, size);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(1, '#4f46e5');
+        ctx.fillStyle = grad;
+
+        // 2. Shape Maskable (Rounded Rectangle)
+        var r = size * 0.18;
+        ctx.beginPath();
+        ctx.moveTo(r, 0);
+        ctx.lineTo(size - r, 0);
+        ctx.quadraticCurveTo(size, 0, size, r);
+        ctx.lineTo(size, size - r);
+        ctx.quadraticCurveTo(size, size, size - r, size);
+        ctx.lineTo(r, size);
+        ctx.quadraticCurveTo(0, size, 0, size - r);
+        ctx.lineTo(0, r);
+        ctx.quadraticCurveTo(0, 0, r, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        // 3. Lingkaran Emas
+        ctx.strokeStyle = '#b8924b';
+        ctx.lineWidth = size * 0.028;
+        ctx.beginPath();
+        ctx.arc(size / 2, size * 0.41, size * 0.22, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 4. Teks AIMS
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 ' + Math.round(size * 0.21) + 'px "Plus Jakarta Sans", sans-serif, system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('AIMS', size / 2, size * 0.41);
+
+        // 5. Teks Subtitle
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '700 ' + Math.round(size * 0.065) + 'px "Plus Jakarta Sans", sans-serif, system-ui';
+        ctx.fillText('MANAGEMENT', size / 2, size * 0.72);
+
+        return canvas.toDataURL('image/png');
+      } catch (e) {
+        return '';
+      }
     }
 
     /**
@@ -17155,7 +17198,9 @@
      */
     function initPWA() {
       try {
-        var iconUrl = getPwaIconDataUrl();
+        var icon192 = getPwaPngIconDataUrl(192);
+        var icon512 = getPwaPngIconDataUrl(512);
+
         var manifestObj = {
           name: "AIMS - Access Information Monitoring System",
           short_name: "AIMS",
@@ -17167,9 +17212,15 @@
           theme_color: "#4f46e5",
           icons: [
             {
-              src: iconUrl,
+              src: icon192,
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any maskable"
+            },
+            {
+              src: icon512,
               sizes: "512x512",
-              type: "image/svg+xml",
+              type: "image/png",
               purpose: "any maskable"
             }
           ]
