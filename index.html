@@ -4,6 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AIMS">
+  <meta name="theme-color" content="#4f46e5">
   <title>AIMS - Access Information Monitoring System</title>
 
   <!-- Plus Jakarta Sans Font -->
@@ -17105,10 +17110,10 @@
   <!-- ================= PWA / WEBAPK MODULE (OPTIMIZED) ================= -->
   <script id="pwa-module">
     var deferredPwaPrompt = null;
+    var userRequestedInstall = false;
 
     /**
      * Generate PNG Base64 Icon required by Chrome WebAPK Minting Service
-     * Android Chrome REJECTS SVG icons and falls back to Chrome-badged shortcut if type is not image/png
      */
     function getPwaPngIconDataUrl(size) {
       try {
@@ -17169,7 +17174,7 @@
      */
     function registerDynamicServiceWorker() {
       if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
-      if (navigator.serviceWorker.controller) return; // SW already active, do not re-register
+      if (navigator.serviceWorker.controller) return;
 
       var swCode = [
         "self.addEventListener('install', function(e) { self.skipWaiting(); });",
@@ -17194,18 +17199,21 @@
     }
 
     /**
-     * Initialize dynamic PWA manifest.json
+     * Initialize dynamic PWA manifest.json immediately
      */
     function initPWA() {
       try {
         var icon192 = getPwaPngIconDataUrl(192);
         var icon512 = getPwaPngIconDataUrl(512);
 
+        var appBaseUrl = window.location.origin + window.location.pathname;
+
         var manifestObj = {
           name: "AIMS - Access Information Monitoring System",
           short_name: "AIMS",
           description: "AIMS - Access Information Monitoring System Management Karyawan",
-          start_url: "./",
+          start_url: appBaseUrl,
+          scope: appBaseUrl.substring(0, appBaseUrl.lastIndexOf('/') + 1),
           display: "standalone",
           orientation: "portrait",
           background_color: "#0f172a",
@@ -17242,78 +17250,60 @@
       registerDynamicServiceWorker();
     }
 
-    // Capture install prompt
+    // Run initPWA immediately
+    initPWA();
+
+    // Capture install prompt event from Chrome Android
     window.addEventListener('beforeinstallprompt', function (e) {
       e.preventDefault();
       deferredPwaPrompt = e;
-      var installBtns = document.querySelectorAll('.btn-install-pwa');
-      installBtns.forEach(function (btn) {
-        btn.classList.remove('d-none');
-        btn.style.display = 'inline-flex';
-      });
+      console.log('[AIMS PWA] beforeinstallprompt event captured');
+
+      if (userRequestedInstall) {
+        userRequestedInstall = false;
+        deferredPwaPrompt.prompt();
+      }
     });
 
     window.addEventListener('appinstalled', function () {
       deferredPwaPrompt = null;
+      userRequestedInstall = false;
     });
 
-    // Install Trigger
+    // Native Install Trigger Function (Direct Chrome Prompt, No Instruction Modal)
     window.installPWAApp = async function installPWAApp() {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'info',
+            title: 'Aplikasi Sudah Terpasang',
+            text: 'AIMS sudah berjalan sebagai aplikasi terinstall di HP Anda.',
+            confirmButtonColor: '#4f46e5'
+          });
+        }
+        return;
+      }
+
       if (deferredPwaPrompt) {
         deferredPwaPrompt.prompt();
         var choiceResult = await deferredPwaPrompt.userChoice;
         if (choiceResult && choiceResult.outcome === 'accepted') {
-          if (typeof Swal !== 'undefined') {
-            Swal.fire({
-              icon: 'success',
-              title: 'Mulai Menginstall',
-              text: 'Aplikasi AIMS sedang dipasang ke perangkat Anda.',
-              timer: 2000,
-              showConfirmButton: false
-            });
-          }
+          console.log('[AIMS PWA] User accepted install prompt');
         }
         deferredPwaPrompt = null;
       } else {
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-          if (typeof Swal !== 'undefined') {
-            Swal.fire({
-              icon: 'info',
-              title: 'Aplikasi Sudah Terpasang',
-              text: 'AIMS sudah berjalan sebagai aplikasi terinstall.',
-              confirmButtonColor: '#4f46e5'
-            });
-          } else {
-            alert('Aplikasi AIMS sudah terpasang.');
-          }
-        } else {
-          if (typeof Swal !== 'undefined') {
-            Swal.fire({
-              icon: 'info',
-              title: 'Cara Install Aplikasi (PWA / WebAPK)',
-              html: '<div style="text-align: left; line-height: 1.6;">' +
-                '<p>Jika dialog otomatis belum muncul di Chrome Android:</p>' +
-                '<ol style="padding-left: 1.25rem;">' +
-                '<li>Klik ikon menu titik tiga (<b>⋮</b>) di pojok kanan atas Chrome.</li>' +
-                '<li>Pilih <b>"Tambahkan ke Layar Utama"</b> atau <b>"Install Aplikasi"</b>.</li>' +
-                '<li>Klik <b>"Install"</b> pada dialog konfirmasi.</li>' +
-                '</ol>' +
-                '</div>',
-              confirmButtonText: 'Saya Mengerti',
-              confirmButtonColor: '#4f46e5'
-            });
-          } else {
-            alert('Untuk menginstall: Buka menu titik tiga di Chrome -> Tambahkan ke Layar Utama / Install Aplikasi.');
-          }
+        userRequestedInstall = true;
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'info',
+            title: 'Menyiapkan Instalasi...',
+            text: 'Menghubungkan ke layanan instalasi Chrome. Mohon tunggu sejenak.',
+            timer: 2000,
+            showConfirmButton: false
+          });
         }
       }
     };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initPWA);
-    } else {
-      initPWA();
-    }
   </script>
 
   <!-- MODAL: DATA USER -->
