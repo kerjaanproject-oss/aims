@@ -1359,30 +1359,35 @@
         padding-bottom: 12px;
         margin-bottom: 15px;
       }
+
       .official-report-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.72rem;
         font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
       }
-      .official-report-table th, 
+
+      .official-report-table th,
       .official-report-table td {
         border: 1px solid #444444 !important;
         padding: 4px 6px !important;
         text-align: center;
         vertical-align: middle;
       }
+
       .official-report-table th {
         background-color: #f4cccc !important;
         color: #000000 !important;
         font-weight: 700;
         text-transform: uppercase;
       }
+
       .official-report-table th.yellow-summary-header {
         background-color: #ffff00 !important;
         color: #000000 !important;
         font-weight: 800;
       }
+
       .official-summary-box {
         background-color: #ffff00;
         border: 2px solid #000000;
@@ -1396,9 +1401,12 @@
         body * {
           visibility: hidden !important;
         }
-        #produksihaulingPrintArea, #produksihaulingPrintArea * {
+
+        #produksihaulingPrintArea,
+        #produksihaulingPrintArea * {
           visibility: visible !important;
         }
+
         #produksihaulingPrintArea {
           position: absolute !important;
           left: 0 !important;
@@ -1408,9 +1416,11 @@
           padding: 15px !important;
           background: #ffffff !important;
         }
+
         .no-print {
           display: none !important;
         }
+
         @page {
           size: A4 landscape;
           margin: 8mm;
@@ -1789,8 +1799,7 @@
       <div class="sidebar-footer">
         <button
           class="btn btn-warning btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2 mb-2 shadow-sm btn-install-pwa"
-          id="btnInstallPWA"
-          style="background-color: #4f46e5; border-color: #4f46e5; color: #ffffff; font-weight: 700;"
+          id="btnInstallPWA" style="background-color: #4f46e5; border-color: #4f46e5; color: #ffffff; font-weight: 700;"
           onclick="installPWAApp()">
           <i class="bi bi-download fs-6"></i>
           <span>Install Aplikasi PWA</span>
@@ -1817,7 +1826,9 @@
           <h5 class="fw-bold text-dark mb-0" id="currentSectionTitle">Dashboard</h5>
         </div>
         <div class="d-flex align-items-center gap-3">
-          <button class="btn btn-primary-custom rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2 border shadow-sm btn-install-pwa" id="topbarBtnInstallPWA" onclick="installPWAApp()" style="font-weight: 600; font-size: 0.85rem;">
+          <button
+            class="btn btn-primary-custom rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2 border shadow-sm btn-install-pwa"
+            id="topbarBtnInstallPWA" onclick="installPWAApp()" style="font-weight: 600; font-size: 0.85rem;">
             <i class="bi bi-download"></i>
             <span class="d-none d-sm-inline">Install Aplikasi</span>
           </button>
@@ -1831,7 +1842,9 @@
               <span id="topbarUsername">Admin</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3">
-              <li><a class="dropdown-item py-2 d-flex align-items-center gap-2 btn-install-pwa" href="#" onclick="installPWAApp(); return false;"><i class="bi bi-download text-primary"></i> Install Aplikasi (PWA)</a></li>
+              <li><a class="dropdown-item py-2 d-flex align-items-center gap-2 btn-install-pwa" href="#"
+                  onclick="installPWAApp(); return false;"><i class="bi bi-download text-primary"></i> Install Aplikasi
+                  (PWA)</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -3189,7 +3202,8 @@
                           onclick="exportProduksiHaulingExcel()"><i class="bi bi-file-earmark-excel text-success"></i>
                           Export Excel Data</a></li>
                       <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="#"
-                          onclick="exportProduksiHaulingOfficialExcel()"><i class="bi bi-file-earmark-excel-fill text-success"></i>
+                          onclick="exportProduksiHaulingOfficialExcel()"><i
+                            class="bi bi-file-earmark-excel-fill text-success"></i>
                           Export Excel Official (Format Lampiran)</a></li>
                     </ul>
                   </div>
@@ -3255,13 +3269,15 @@
         <!-- ================= PAGE: LAPORAN RITASE DRIVER ================= -->
         <div id="page-laporanritase" class="app-page d-none">
           <div class="card card-custom p-4 mb-4">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+            <div
+              class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
               <div>
                 <h5 class="fw-bold text-dark mb-1">
                   <i class="bi bi-file-earmark-bar-graph me-2 text-info"></i>Laporan Total Ritase Driver
                 </h5>
                 <p class="text-secondary small mb-0">
-                  Ringkasan total ritase, volume, dan nettonase per driver yang dihitung otomatis dari seluruh data transaksi hauling.
+                  Ringkasan total ritase, volume, dan nettonase per driver yang dihitung otomatis dari seluruh data
+                  transaksi hauling.
                 </p>
               </div>
             </div>
@@ -3271,7 +3287,8 @@
               <div class="col-12 col-md-4">
                 <div class="card border-0 bg-primary bg-opacity-10 p-3 rounded-3 h-100">
                   <div class="d-flex align-items-center gap-3">
-                    <div class="bg-primary text-white rounded-3 p-2.5 d-flex align-items-center justify-content-center" style="width:48px; height:48px;">
+                    <div class="bg-primary text-white rounded-3 p-2.5 d-flex align-items-center justify-content-center"
+                      style="width:48px; height:48px;">
                       <i class="bi bi-person-badge fs-4"></i>
                     </div>
                     <div>
@@ -3285,7 +3302,8 @@
               <div class="col-12 col-md-4">
                 <div class="card border-0 bg-success bg-opacity-10 p-3 rounded-3 h-100">
                   <div class="d-flex align-items-center gap-3">
-                    <div class="bg-success text-white rounded-3 p-2.5 d-flex align-items-center justify-content-center" style="width:48px; height:48px;">
+                    <div class="bg-success text-white rounded-3 p-2.5 d-flex align-items-center justify-content-center"
+                      style="width:48px; height:48px;">
                       <i class="bi bi-truck fs-4"></i>
                     </div>
                     <div>
@@ -3299,7 +3317,8 @@
               <div class="col-12 col-md-4">
                 <div class="card border-0 bg-warning bg-opacity-10 p-3 rounded-3 h-100">
                   <div class="d-flex align-items-center gap-3">
-                    <div class="bg-warning text-dark rounded-3 p-2.5 d-flex align-items-center justify-content-center" style="width:48px; height:48px;">
+                    <div class="bg-warning text-dark rounded-3 p-2.5 d-flex align-items-center justify-content-center"
+                      style="width:48px; height:48px;">
                       <i class="bi bi-boxes fs-4"></i>
                     </div>
                     <div>
@@ -3315,7 +3334,8 @@
             <div class="row g-2 align-items-end mb-3">
               <!-- Search Driver -->
               <div class="col-12 col-md-3">
-                <label class="form-label font-semibold small mb-1 text-secondary"><i class="bi bi-search me-1"></i>Pencarian Operator / Driver</label>
+                <label class="form-label font-semibold small mb-1 text-secondary"><i
+                    class="bi bi-search me-1"></i>Pencarian Operator / Driver</label>
                 <div class="input-group">
                   <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                   <input type="text" id="laporanritaseSearchInput" class="form-control border-start-0"
@@ -3325,7 +3345,8 @@
 
               <!-- Filter No Unit -->
               <div class="col-12 col-sm-6 col-md-2">
-                <label class="form-label font-semibold small mb-1 text-secondary"><i class="bi bi-truck me-1"></i>No. Unit</label>
+                <label class="form-label font-semibold small mb-1 text-secondary"><i class="bi bi-truck me-1"></i>No.
+                  Unit</label>
                 <select id="laporanritaseFilterUnit" class="form-select" onchange="filterLaporanRitaseTable()">
                   <option value="">Semua Unit</option>
                 </select>
@@ -3333,7 +3354,8 @@
 
               <!-- Shift Filter -->
               <div class="col-12 col-sm-6 col-md-2">
-                <label class="form-label font-semibold small mb-1 text-secondary"><i class="bi bi-clock-history me-1"></i>Shift</label>
+                <label class="form-label font-semibold small mb-1 text-secondary"><i
+                    class="bi bi-clock-history me-1"></i>Shift</label>
                 <select id="laporanritaseFilterShift" class="form-select" onchange="filterLaporanRitaseTable()">
                   <option value="">Semua Shift</option>
                   <option value="Pagi">Pagi</option>
@@ -3343,20 +3365,23 @@
 
               <!-- Filter Tgl Start -->
               <div class="col-12 col-sm-6 col-md-2">
-                <label class="form-label font-semibold small mb-1 text-secondary"><i class="bi bi-calendar-play me-1"></i>Tgl Mulai</label>
+                <label class="form-label font-semibold small mb-1 text-secondary"><i
+                    class="bi bi-calendar-play me-1"></i>Tgl Mulai</label>
                 <input type="date" id="laporanritaseFilterTanggalStart" class="form-control"
                   onchange="filterLaporanRitaseTable()" title="Filter Tanggal Mulai">
               </div>
 
               <!-- Filter Tgl Selesai -->
               <div class="col-12 col-sm-6 col-md-3">
-                <label class="form-label font-semibold small mb-1 text-secondary"><i class="bi bi-calendar-check me-1"></i>Tgl Selesai</label>
+                <label class="form-label font-semibold small mb-1 text-secondary"><i
+                    class="bi bi-calendar-check me-1"></i>Tgl Selesai</label>
                 <input type="date" id="laporanritaseFilterTanggalSelesai" class="form-control"
                   onchange="filterLaporanRitaseTable()" title="Filter Tanggal Selesai">
               </div>
 
               <!-- Action Bar (Reset Filter & Export Excel) -->
-              <div class="col-12 d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 border-top mt-2">
+              <div
+                class="col-12 d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 border-top mt-2">
                 <div class="d-flex flex-wrap align-items-center gap-2">
                   <button class="btn btn-reset-custom d-flex align-items-center justify-content-center gap-1.5"
                     onclick="resetLaporanRitaseFilter()" title="Reset Filter">
@@ -3397,7 +3422,8 @@
             </div>
 
             <!-- Footer Info -->
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-3 pt-3 border-top">
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-3 pt-3 border-top">
               <div class="text-secondary small font-semibold" id="laporanritaseTableInfo">
                 Menampilkan 0 Driver
               </div>
@@ -6288,11 +6314,13 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-primary text-white border-0">
-          <h5 class="modal-title fw-bold" id="detLapRitTitle"><i class="bi bi-truck me-2"></i>Rincian Transaksi Hauling Driver</h5>
+          <h5 class="modal-title fw-bold" id="detLapRitTitle"><i class="bi bi-truck me-2"></i>Rincian Transaksi Hauling
+            Driver</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4">
-          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+          <div
+            class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div>
               <h6 class="fw-bold text-dark fs-5 mb-0" id="detLapRitDriverName">Driver: -</h6>
               <span class="text-muted small" id="detLapRitSubtitle">Total Transaksi Penimbangan</span>
@@ -6337,7 +6365,8 @@
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-dark text-white border-0 py-2 no-print">
           <h5 class="modal-title fw-bold fs-6">
-            <i class="bi bi-printer-fill me-2 text-warning"></i>Pratinjau Cetak Laporan Produksi Hauling (Format Official)
+            <i class="bi bi-printer-fill me-2 text-warning"></i>Pratinjau Cetak Laporan Produksi Hauling (Format
+            Official)
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -6356,9 +6385,12 @@
 
                 <!-- Quick SEAM Batch Edit Controls -->
                 <div class="d-flex align-items-center gap-2 bg-white p-1.5 px-2.5 rounded border shadow-sm">
-                  <label class="form-label font-semibold small mb-0 text-dark me-1"><i class="bi bi-layers-fill text-warning me-1"></i>Atur SEAM Laporan:</label>
-                  <input type="text" id="printReportBatchSeamInput" class="form-control form-control-sm border-warning" style="width: 100px;" placeholder="cth: W10" value="W10">
-                  <button class="btn btn-sm btn-outline-warning text-dark fw-semibold d-flex align-items-center gap-1" onclick="applyBatchSeamToReport()" title="Terapkan kode SEAM ini ke seluruh baris tabel di bawah">
+                  <label class="form-label font-semibold small mb-0 text-dark me-1"><i
+                      class="bi bi-layers-fill text-warning me-1"></i>Atur SEAM Laporan:</label>
+                  <input type="text" id="printReportBatchSeamInput" class="form-control form-control-sm border-warning"
+                    style="width: 100px;" placeholder="cth: W10" value="W10">
+                  <button class="btn btn-sm btn-outline-warning text-dark fw-semibold d-flex align-items-center gap-1"
+                    onclick="applyBatchSeamToReport()" title="Terapkan kode SEAM ini ke seluruh baris tabel di bawah">
                     <i class="bi bi-check2-all"></i> Set Semua Baris
                   </button>
                 </div>
@@ -6379,7 +6411,8 @@
           </div>
 
           <!-- Printable Area Document -->
-          <div id="produksihaulingPrintArea" class="bg-white p-4 rounded-3 border shadow-sm mx-auto" style="max-width: 1400px;">
+          <div id="produksihaulingPrintArea" class="bg-white p-4 rounded-3 border shadow-sm mx-auto"
+            style="max-width: 1400px;">
             <!-- Header Kop Surat -->
             <div class="official-report-header text-center">
               <h4 class="fw-bold text-dark mb-1" style="letter-spacing: 1px;">LAPORAN PENIMBANGAN PRODUKSI HAULING</h4>
@@ -6442,7 +6475,8 @@
                     <td class="fw-bold text-dark" style="background-color:#ffff00;" id="printReportFootRitase">0</td>
                     <td colspan="7"></td>
                     <td class="fw-bold text-dark" style="background-color:#ffff00;" id="printReportFootNettoKg">0</td>
-                    <td class="fw-bold text-dark" style="background-color:#ffff00;" id="printReportFootNettoTon">0,00</td>
+                    <td class="fw-bold text-dark" style="background-color:#ffff00;" id="printReportFootNettoTon">0,00
+                    </td>
                   </tr>
                 </tfoot>
               </table>
@@ -7425,12 +7459,27 @@
         stockOpname: []
       };
 
-      // Single Pattern Server Run helper
+      // Hybrid Server Run helper (Supports both Google Apps Script environment & GitHub Pages hosting)
+      window.GAS_WEB_APP_URL = window.GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbx2MfeJnqGE744F5vOtfBfsQT8J4_r5nJjDjJ4lmHVO-3SnZWtsln0hF6nXZ-WLuPHv/exec"; // Paste your GAS Web App URL here if hosting on GitHub Pages
+
       function gasRun(funcName) {
         var args = Array.prototype.slice.call(arguments, 1);
         return new Promise(function (resolve, reject) {
-          var runner = google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
-          runner[funcName].apply(runner, args);
+          if (typeof google !== 'undefined' && google.script && google.script.run) {
+            var runner = google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
+            runner[funcName].apply(runner, args);
+          } else if (window.GAS_WEB_APP_URL) {
+            fetch(window.GAS_WEB_APP_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ action: funcName, args: args })
+            })
+              .then(function (res) { return res.json(); })
+              .then(resolve)
+              .catch(reject);
+          } else {
+            reject(new Error("google.script.run is not available and window.GAS_WEB_APP_URL is not configured."));
+          }
         });
       }
 
@@ -13722,8 +13771,8 @@
             '<td>PIT TO JETTY</td>' +
             '<td>' + escapeHTML(item.lokasiPit || 'PIT 1') + '</td>' +
             '<td>' +
-              '<input type="text" class="form-control form-control-sm print-row-seam-input text-center py-0 px-1 font-semibold border-secondary no-print" style="width:70px; margin:auto; font-size:0.75rem;" value="' + escapeHTML(seamVal) + '" onkeyup="updateRowSeamText(this)" onchange="updateRowSeamText(this)" title="Klik untuk mengedit kode SEAM baris ini">' +
-              '<span class="print-row-seam-text d-none print-show-inline">' + escapeHTML(seamVal) + '</span>' +
+            '<input type="text" class="form-control form-control-sm print-row-seam-input text-center py-0 px-1 font-semibold border-secondary no-print" style="width:70px; margin:auto; font-size:0.75rem;" value="' + escapeHTML(seamVal) + '" onkeyup="updateRowSeamText(this)" onchange="updateRowSeamText(this)" title="Klik untuk mengedit kode SEAM baris ini">' +
+            '<span class="print-row-seam-text d-none print-show-inline">' + escapeHTML(seamVal) + '</span>' +
             '</td>' +
             '<td style="background-color:#ffffcc; font-weight:bold;">' + ritNum + '</td>' +
             '<td>' + escapeHTML(formatDateDDMMYYYY(item.tanggalStart || item.tanggalInput)) + '</td>' +
@@ -17154,10 +17203,10 @@
         var swBlob = new Blob([swCode], { type: 'application/javascript' });
         var swUrl = URL.createObjectURL(swBlob);
         navigator.serviceWorker.register(swUrl)
-          .then(function(reg) {
+          .then(function (reg) {
             console.log('[AIMS PWA] Service Worker registered dynamically via Blob. Scope:', reg.scope);
           })
-          .catch(function(err) {
+          .catch(function (err) {
             console.warn('[AIMS PWA] Service Worker registration failed:', err);
           });
       } catch (err) {
@@ -17212,20 +17261,20 @@
     /**
      * Listen for beforeinstallprompt event & store in deferredPwaPrompt
      */
-    window.addEventListener('beforeinstallprompt', function(e) {
+    window.addEventListener('beforeinstallprompt', function (e) {
       e.preventDefault();
       deferredPwaPrompt = e;
       console.log('[AIMS PWA] beforeinstallprompt event captured and saved to deferredPwaPrompt.');
 
       // Highlight install buttons
       var installBtns = document.querySelectorAll('.btn-install-pwa');
-      installBtns.forEach(function(btn) {
+      installBtns.forEach(function (btn) {
         btn.classList.remove('d-none');
         btn.style.display = 'inline-flex';
       });
     });
 
-    window.addEventListener('appinstalled', function() {
+    window.addEventListener('appinstalled', function () {
       console.log('[AIMS PWA] App was successfully installed!');
       deferredPwaPrompt = null;
     });
@@ -17270,13 +17319,13 @@
               icon: 'info',
               title: 'Cara Install Aplikasi (PWA / WebAPK)',
               html: '<div style="text-align: left; line-height: 1.6;">' +
-                    '<p>Jika dialog otomatis belum muncul di Chrome Android:</p>' +
-                    '<ol style="padding-left: 1.25rem;">' +
-                    '<li>Klik ikon menu titik tiga (<b>⋮</b>) di pojok kanan atas Chrome.</li>' +
-                    '<li>Pilih <b>"Tambahkan ke Layar Utama"</b> atau <b>"Install Aplikasi"</b>.</li>' +
-                    '<li>Klik <b>"Install"</b> pada dialog konfirmasi.</li>' +
-                    '</ol>' +
-                    '</div>',
+                '<p>Jika dialog otomatis belum muncul di Chrome Android:</p>' +
+                '<ol style="padding-left: 1.25rem;">' +
+                '<li>Klik ikon menu titik tiga (<b>⋮</b>) di pojok kanan atas Chrome.</li>' +
+                '<li>Pilih <b>"Tambahkan ke Layar Utama"</b> atau <b>"Install Aplikasi"</b>.</li>' +
+                '<li>Klik <b>"Install"</b> pada dialog konfirmasi.</li>' +
+                '</ol>' +
+                '</div>',
               confirmButtonText: 'Saya Mengerti',
               confirmButtonColor: '#4f46e5'
             });
