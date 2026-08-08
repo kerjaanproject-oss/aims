@@ -7460,7 +7460,7 @@
       };
 
       // Hybrid Server Run helper (Supports both Google Apps Script environment & GitHub Pages hosting)
-      window.GAS_WEB_APP_URL = window.GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbzzmiVwnnQSp7KNBffcVL05L9e_4CxMpA9IXOA0AfrF7dsmZQxTEUMgnGgDakikWtI/exec"; // Paste your GAS Web App URL here if hosting on GitHub Pages
+      window.GAS_WEB_APP_URL = window.GAS_WEB_APP_URL || "https://script.google.com/macros/s/AKfycbx2MfeJnqGE744F5vOtfBfsQT8J4_r5nJjDjJ4lmHVO-3SnZWtsln0hF6nXZ-WLuPHv/exec"; // Paste your GAS Web App URL here if hosting on GitHub Pages
 
       function gasRun(funcName) {
         var args = Array.prototype.slice.call(arguments, 1);
@@ -17102,99 +17102,37 @@
     })();
   </script>
 
-  <!-- ================= PWA / WEBAPK MODULE ================= -->
+  <!-- ================= PWA / WEBAPK MODULE (OPTIMIZED) ================= -->
   <script id="pwa-module">
-    // Global variable to catch beforeinstallprompt event
     var deferredPwaPrompt = null;
 
     /**
-     * Generate actual 512x512 PNG Base64 Icon dynamically via HTML Canvas
-     * Ensures high resolution 512x512 dimensions (DILARANG pakai 1x1 dummy PNG)
+     * Ultra-lightweight inline SVG data URL for PWA manifest icon
+     * Avoids heavy canvas rendering loops that cause phone freezing
      */
-    function create512x512Base64Icon() {
-      try {
-        var canvas = document.createElement('canvas');
-        canvas.width = 512;
-        canvas.height = 512;
-        var ctx = canvas.getContext('2d');
-        if (!ctx) return '';
-
-        // 1. Background Gradient (Dark Navy to Indigo)
-        var grad = ctx.createLinearGradient(0, 0, 512, 512);
-        grad.addColorStop(0, '#0f172a');
-        grad.addColorStop(0.5, '#1e1b4b');
-        grad.addColorStop(1, '#4f46e5');
-        ctx.fillStyle = grad;
-
-        // 2. Rounded Maskable Icon Shape
-        var r = 96;
-        ctx.beginPath();
-        ctx.moveTo(r, 0);
-        ctx.lineTo(512 - r, 0);
-        ctx.quadraticCurveTo(512, 0, 512, r);
-        ctx.lineTo(512, 512 - r);
-        ctx.quadraticCurveTo(512, 512, 512 - r, 512);
-        ctx.lineTo(r, 512);
-        ctx.quadraticCurveTo(0, 512, 0, 512 - r);
-        ctx.lineTo(0, r);
-        ctx.quadraticCurveTo(0, 0, r, 0);
-        ctx.closePath();
-        ctx.fill();
-
-        // 3. Gold Accent Outer Circle Ring
-        ctx.strokeStyle = '#b8924b';
-        ctx.lineWidth = 14;
-        ctx.beginPath();
-        ctx.arc(256, 210, 115, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // 4. White Bold Title Text "AIMS"
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '900 110px "Plus Jakarta Sans", sans-serif, system-ui';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('AIMS', 256, 210);
-
-        // 5. Subtitle Text
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '700 32px "Plus Jakarta Sans", sans-serif, system-ui';
-        ctx.fillText('MANAGEMENT', 256, 365);
-
-        ctx.fillStyle = '#b8924b';
-        ctx.font = '600 24px "Plus Jakarta Sans", sans-serif, system-ui';
-        ctx.fillText('SYSTEM', 256, 405);
-
-        return canvas.toDataURL('image/png');
-      } catch (e) {
-        console.warn('[PWA] Canvas 512 icon generation error:', e);
-        return '';
-      }
+    function getPwaIconDataUrl() {
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">' +
+        '<rect width="512" height="512" rx="96" fill="#0f172a"/>' +
+        '<circle cx="256" cy="210" r="115" fill="none" stroke="#b8924b" stroke-width="14"/>' +
+        '<text x="256" y="225" font-family="sans-serif" font-weight="900" font-size="100" fill="#ffffff" text-anchor="middle">AIMS</text>' +
+        '<text x="256" y="365" font-family="sans-serif" font-weight="700" font-size="30" fill="#f8fafc" text-anchor="middle">MANAGEMENT</text>' +
+        '<text x="256" y="405" font-family="sans-serif" font-weight="600" font-size="22" fill="#b8924b" text-anchor="middle">SYSTEM</text>' +
+        '</svg>';
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }
 
     /**
-     * Register dynamic Service Worker via Blob to bypass script.google.com domain limitations
+     * Safe & lightweight Service Worker Registration
      */
     function registerDynamicServiceWorker() {
-      if (!('serviceWorker' in navigator)) {
-        console.warn('[PWA] ServiceWorker is not supported in this browser environment.');
-        return;
-      }
+      if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+      if (navigator.serviceWorker.controller) return; // SW already active, do not re-register
 
       var swCode = [
-        "const CACHE_NAME = 'aims-pwa-v1';",
-        "self.addEventListener('install', function(e) {",
-        "  console.log('[AIMS SW] Installed');",
-        "  self.skipWaiting();",
-        "});",
-        "self.addEventListener('activate', function(e) {",
-        "  console.log('[AIMS SW] Activated');",
-        "  e.waitUntil(self.clients.claim());",
-        "});",
+        "self.addEventListener('install', function(e) { self.skipWaiting(); });",
+        "self.addEventListener('activate', function(e) { e.waitUntil(self.clients.claim()); });",
         "self.addEventListener('fetch', function(e) {",
-        "  if (e.request.url.includes('script.google.com') || e.request.url.includes('googleusercontent.com')) {",
-        "    e.respondWith(fetch(e.request).catch(function() { return caches.match(e.request); }));",
-        "    return;",
-        "  }",
+        "  if (e.request.url.includes('script.google.com') || e.request.url.includes('googleusercontent.com')) return;",
         "  e.respondWith(fetch(e.request).catch(function() { return caches.match(e.request); }));",
         "});"
       ].join('\n');
@@ -17204,42 +17142,39 @@
         var swUrl = URL.createObjectURL(swBlob);
         navigator.serviceWorker.register(swUrl)
           .then(function (reg) {
-            console.log('[AIMS PWA] Service Worker registered dynamically via Blob. Scope:', reg.scope);
+            console.log('[AIMS PWA] ServiceWorker registered.');
           })
           .catch(function (err) {
-            console.warn('[AIMS PWA] Service Worker registration failed:', err);
+            console.warn('[AIMS PWA] SW registration notice:', err);
           });
-      } catch (err) {
-        console.warn('[AIMS PWA] Blob SW creation failed:', err);
-      }
+      } catch (err) { }
     }
 
     /**
-     * Initialize PWA dynamic manifest.json via Blob
+     * Initialize dynamic PWA manifest.json
      */
     function initPWA() {
-      var icon512 = create512x512Base64Icon();
-
-      var manifestObj = {
-        name: "AIMS - Access Information Monitoring System",
-        short_name: "AIMS",
-        description: "AIMS - Access Information Monitoring System Management Karyawan",
-        start_url: window.location.href,
-        display: "standalone",
-        orientation: "portrait",
-        background_color: "#0f172a",
-        theme_color: "#4f46e5",
-        icons: [
-          {
-            src: icon512,
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable"
-          }
-        ]
-      };
-
       try {
+        var iconUrl = getPwaIconDataUrl();
+        var manifestObj = {
+          name: "AIMS - Access Information Monitoring System",
+          short_name: "AIMS",
+          description: "AIMS - Access Information Monitoring System Management Karyawan",
+          start_url: "./",
+          display: "standalone",
+          orientation: "portrait",
+          background_color: "#0f172a",
+          theme_color: "#4f46e5",
+          icons: [
+            {
+              src: iconUrl,
+              sizes: "512x512",
+              type: "image/svg+xml",
+              purpose: "any maskable"
+            }
+          ]
+        };
+
         var manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
         var manifestUrl = URL.createObjectURL(manifestBlob);
         var link = document.querySelector('link[rel="manifest"]');
@@ -17249,24 +17184,17 @@
           document.head.appendChild(link);
         }
         link.href = manifestUrl;
-        console.log('[AIMS PWA] Dynamic manifest.json injected via Blob.');
       } catch (e) {
-        console.warn('[AIMS PWA] Manifest Blob injection failed:', e);
+        console.warn('[AIMS PWA] Manifest initialization notice:', e);
       }
 
-      // Register dynamic Service Worker
       registerDynamicServiceWorker();
     }
 
-    /**
-     * Listen for beforeinstallprompt event & store in deferredPwaPrompt
-     */
+    // Capture install prompt
     window.addEventListener('beforeinstallprompt', function (e) {
       e.preventDefault();
       deferredPwaPrompt = e;
-      console.log('[AIMS PWA] beforeinstallprompt event captured and saved to deferredPwaPrompt.');
-
-      // Highlight install buttons
       var installBtns = document.querySelectorAll('.btn-install-pwa');
       installBtns.forEach(function (btn) {
         btn.classList.remove('d-none');
@@ -17275,30 +17203,24 @@
     });
 
     window.addEventListener('appinstalled', function () {
-      console.log('[AIMS PWA] App was successfully installed!');
       deferredPwaPrompt = null;
     });
 
-    /**
-     * Function to trigger PWA app installation dialog (deferredPwaPrompt.prompt())
-     */
+    // Install Trigger
     window.installPWAApp = async function installPWAApp() {
       if (deferredPwaPrompt) {
         deferredPwaPrompt.prompt();
         var choiceResult = await deferredPwaPrompt.userChoice;
         if (choiceResult && choiceResult.outcome === 'accepted') {
-          console.log('[AIMS PWA] User accepted install prompt.');
           if (typeof Swal !== 'undefined') {
             Swal.fire({
               icon: 'success',
               title: 'Mulai Menginstall',
               text: 'Aplikasi AIMS sedang dipasang ke perangkat Anda.',
-              timer: 2500,
+              timer: 2000,
               showConfirmButton: false
             });
           }
-        } else {
-          console.log('[AIMS PWA] User dismissed install prompt.');
         }
         deferredPwaPrompt = null;
       } else {
@@ -17336,7 +17258,6 @@
       }
     };
 
-    // Auto initialize PWA on DOM ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initPWA);
     } else {
