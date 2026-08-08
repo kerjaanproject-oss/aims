@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body, html { width: 512px; height: 512px; overflow: hidden; background: transparent; }
+  svg { width: 512px; height: 512px; display: block; }
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <circle cx="256" cy="210" r="135" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="14"/>
+  <!-- Shield Badge -->
+  <path d="M256 105 L335 142 V230 C335 288 295 335 256 355 C217 335 177 288 177 230 V142 Z" fill="url(#iconGrad)" opacity="0.96"/>
+  <path d="M256 132 L315 160 V225 C315 270 286 308 256 325 C226 308 197 270 197 225 V160 Z" fill="#4f46e5"/>
+  <text x="256" y="248" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="900" font-size="54" fill="#ffffff" text-anchor="middle">AIMS</text>
+  <text x="256" y="425" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="800" font-size="42" fill="#ffffff" text-anchor="middle" letter-spacing="6">HRIS APP</text>
+</svg>
+</body>
+</html>
