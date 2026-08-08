@@ -17113,68 +17113,55 @@
     var userRequestedInstall = false;
 
     /**
-     * Generate PNG Base64 Icon required by Chrome WebAPK Minting Service
+     * Static PNG Base64 Icon Constants required by Chrome WebAPK Minting Service
+     * Zero CPU / Zero Canvas rendering overhead at runtime
      */
-    function getPwaPngIconDataUrl(size) {
-      try {
-        var canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        var ctx = canvas.getContext('2d');
-        if (!ctx) return '';
+    var PWA_ICON_192_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAKoElEQVR4nO3dV3cUNxQHcL7BPu4..." +
+      "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" +
+      "GJiekwgAAAAASUVORK5CYII=";
 
-        // 1. Latar Belakang Navy
-        var grad = ctx.createLinearGradient(0, 0, size, size);
-        grad.addColorStop(0, '#0f172a');
-        grad.addColorStop(1, '#4f46e5');
-        ctx.fillStyle = grad;
-
-        // 2. Shape Maskable (Rounded Rectangle)
-        var r = size * 0.18;
-        ctx.beginPath();
-        ctx.moveTo(r, 0);
-        ctx.lineTo(size - r, 0);
-        ctx.quadraticCurveTo(size, 0, size, r);
-        ctx.lineTo(size, size - r);
-        ctx.quadraticCurveTo(size, size, size - r, size);
-        ctx.lineTo(r, size);
-        ctx.quadraticCurveTo(0, size, 0, size - r);
-        ctx.lineTo(0, r);
-        ctx.quadraticCurveTo(0, 0, r, 0);
-        ctx.closePath();
-        ctx.fill();
-
-        // 3. Lingkaran Emas
-        ctx.strokeStyle = '#b8924b';
-        ctx.lineWidth = size * 0.028;
-        ctx.beginPath();
-        ctx.arc(size / 2, size * 0.41, size * 0.22, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // 4. Teks AIMS
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '900 ' + Math.round(size * 0.21) + 'px "Plus Jakarta Sans", sans-serif, system-ui';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('AIMS', size / 2, size * 0.41);
-
-        // 5. Teks Subtitle
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '700 ' + Math.round(size * 0.065) + 'px "Plus Jakarta Sans", sans-serif, system-ui';
-        ctx.fillText('MANAGEMENT', size / 2, size * 0.72);
-
-        return canvas.toDataURL('image/png');
-      } catch (e) {
-        return '';
-      }
-    }
+    var PWA_ICON_512_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAAkNklEQVR4nO3daZtk513fcd6BH" +
+      "uqBZXkkjWbp0ezT3bNIlpeHSggkDoaQEBLAYEveFwEOOOBAIHEgVsB4wbYs2RJ2IAlJSJR9e2O5+pzu6qrq6u6qOvc5/3v5XNfvBUxXnfvz7Z4" +
+      "H9/mxxx7fMTOzBvdj4f8CMzMLmQCYmTU6ATAza3QCYGbW6ATAzKzRCYCZWaMTADOzRicAZmaNTgDMzBqdAJiZNToBMDNrdAJgZtboBMDMrNEJ" +
+      "gJlZoxMAM7NGJwBmZo1OAMzMGp0AmJk1OgEwM2t0AmBm1ugEwMys0QmAmVmjEwAzs0YnAGZmje7/A5Ewt34ytmeCAAAAAElFTkSuQmCC";
 
     /**
      * Safe & lightweight Service Worker Registration
      */
     function registerDynamicServiceWorker() {
       if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
-      if (navigator.serviceWorker.controller) return;
+      if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) return;
+      if (navigator.serviceWorker.controller) return; // SW already active, do not re-register
 
       var swCode = [
         "self.addEventListener('install', function(e) { self.skipWaiting(); });",
@@ -17199,12 +17186,18 @@
     }
 
     /**
-     * Initialize dynamic PWA manifest.json immediately
+     * Initialize dynamic PWA manifest.json
      */
     function initPWA() {
+      // Exit immediately if app is already running in Standalone WebAPK mode (prevents phone hang/freeze)
+      if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+        console.log('[AIMS PWA] App running in Standalone WebAPK mode.');
+        return;
+      }
+
       try {
-        var icon192 = getPwaPngIconDataUrl(192);
-        var icon512 = getPwaPngIconDataUrl(512);
+        var icon192 = PWA_ICON_192_BASE64;
+        var icon512 = PWA_ICON_512_BASE64;
 
         var appBaseUrl = window.location.origin + window.location.pathname;
 
